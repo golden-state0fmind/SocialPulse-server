@@ -3,7 +3,7 @@ const userModel = require('../models/user');
 const index = async function (req, res) {
     const user = await userModel.find({});
     try {
-        res.send(user);
+        res.json(user);
     } catch (error) {
         res.status(500).send(error);
     }
@@ -11,8 +11,8 @@ const index = async function (req, res) {
 //get a single user
 const getOne = async (req, res) => {
     try {
-        await userModel.findById(req.params.id);
-        res.send(req.body)
+        const user = await userModel.findById({ "_id": req.params.id }).populate("user_id");
+        res.json(user)
     } catch (error) {
         res.status(500).send(error);
     };
@@ -22,7 +22,7 @@ const create = async (req, res) => {
     const user = new userModel(req.body);
     try {
         await user.save();
-        res.send(user);
+        res.json(user);
     } catch (error) {
         res.status(500).send(error);
     };
@@ -30,9 +30,10 @@ const create = async (req, res) => {
 //update a single user
 const update = async (req, res) => {
     try {
-        await userModel.findByIdAndUpdate(req.params.id, req.body);
-        await userModel.save();
-        res.send(user);
+        const updates = req.body
+        const user = await userModel.findByIdAndUpdate(req.params.id, updates)
+        await user.save()
+        res.json(user);
     } catch (error) {
         res.status(500).send(error);
     };
