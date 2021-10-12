@@ -33,7 +33,7 @@ const update = async (req, res) => {
         const updates = req.body
         const user = await userModel.findByIdAndUpdate(req.params.id, updates)
         await user.save()
-        res.json(user);
+        res.json(updates);
     } catch (error) {
         res.status(500).send(error);
     };
